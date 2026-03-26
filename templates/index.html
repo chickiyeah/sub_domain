@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DecoDNS - 10초 만에 끝내는 무료 서브도메인 관리</title>
+<meta name="description" content="A, CNAME, TXT 레코드를 무제한으로 관리하세요. 개발자와 학생을 위한 최고의 무료 DNS 서비스.">
+<meta name="keywords" content="DNS, 서브도메인, 무료도메인, 도메인관리, Cloudflare">
+<link rel="canonical" href="https://decodns.org"><meta name="description" content="나만의 서브도메인을 10초 만에 생성하고 관리하세요.">
+<title>DecoDNS - 10초 만에 끝내는 무료 서브도메인 관리</title>
+<meta name="description" content="A, CNAME, TXT 레코드를 무제한으로 관리하세요. 개발자와 학생을 위한 최고의 무료 DNS 서비스.">
+<meta name="keywords" content="DNS, 서브도메인, 무료도메인, 도메인관리, Cloudflare">
+<meta name="naver-site-verification" content="e793ed8e5d6729031a22faff7b60b10cbc29dbe1" />
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://decodns.org">
+<meta property="og:title" content="DecoDNS: 당신의 도메인에 날개를">
+<meta property="og:description" content="무료 A, CNAME, TXT 레코드 관리 서비스. 지금 바로 시작하세요!">
+<meta property="og:image" content="https://decodns.org/static/img/og-preview.png"> <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DecoDNS">
+<meta name="twitter:description" content="간편한 DNS 관리의 시작">
+<meta name="twitter:image" content="https://decodns.org/static/img/og-preview.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md p-8 bg-slate-800 rounded-2xl shadow-xl">
+        <h1 class="text-3xl font-bold text-center mb-8 text-indigo-400">DecoDNS</h1>
+        
+        <div class="flex mb-6 border-b border-slate-700">
+            <button id="loginTab" class="flex-1 pb-2 border-b-2 border-indigo-500">로그인</button>
+            <button id="signupTab" class="flex-1 pb-2 text-slate-400">회원가입</button>
+        </div>
+
+        <form id="authForm" class="space-y-4">
+            <input type="text" id="username" placeholder="아이디" class="w-full p-3 rounded bg-slate-900 border border-slate-700">
+            <input type="password" id="password" placeholder="비밀번호" class="w-full p-3 rounded bg-slate-900 border border-slate-700">
+            <button type="submit" id="submitBtn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-bold">
+                접속하기
+            </button>
+        </form>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>

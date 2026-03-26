@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DecoDNS - 10초 만에 끝내는 무료 서브도메인 관리</title>
+<meta name="description" content="A, CNAME, TXT 레코드를 무제한으로 관리하세요. 개발자와 학생을 위한 최고의 무료 DNS 서비스.">
+<meta name="keywords" content="DNS, 서브도메인, 무료도메인, 도메인관리, Cloudflare">
+<link rel="canonical" href="https://decodns.org"><meta name="description" content="나만의 서브도메인을 10초 만에 생성하고 관리하세요.">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://decodns.org">
+<meta property="og:title" content="DecoDNS: 당신의 도메인에 날개를">
+<meta property="og:description" content="무료 A, CNAME, TXT 레코드 관리 서비스. 지금 바로 시작하세요!">
+<meta property="og:image" content="https://decodns.org/static/img/og-preview.png"> <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DecoDNS">
+<meta name="twitter:description" content="간편한 DNS 관리의 시작">
+<meta name="twitter:image" content="https://decodns.org/static/img/og-preview.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .modal-bg { background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <nav class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/80 sticky top-0 z-40 backdrop-blur-md">
+        <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">DecoDNS</h1>
+        <button onclick="logout()" class="text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg hover:bg-red-900/30 hover:border-red-500/50 transition-all">로그아웃</button>
+    </nav>
+
+    <main class="max-w-5xl mx-auto p-4 md:p-8 space-y-10">
+        <section class="bg-slate-800/50 p-6 rounded-3xl border border-slate-700 shadow-xl">
+            <h2 class="text-lg font-bold mb-5 flex items-center gap-2 text-indigo-300">
+                <span class="w-2 h-6 bg-indigo-500 rounded-full"></span>
+                새 DNS 레코드 등록
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <select id="recordType" onchange="updateNewUI()" class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="A">A (IPv4)</option>
+                    <option value="AAAA">AAAA (IPv6)</option>
+                    <option value="CNAME">CNAME</option>
+                    <option value="TXT">TXT</option>
+                    <option value="MX">MX (Mail)</option>
+                </select>
+                <div class="flex items-center bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <input type="text" id="subdomain" placeholder="host" class="bg-transparent w-full outline-none text-sm">
+                    <span class="text-slate-500 text-xs">.decodns.org</span>
+                </div>
+                <input type="text" id="targetContent" placeholder="IP 또는 값" class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-sm outline-none">
+                <input type="number" id="priority" placeholder="우선순위" class="hidden bg-slate-900 p-3 rounded-xl border border-slate-700 text-sm outline-none" value="10">
+                <button onclick="handleRegister()" class="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold py-3 transition-all">추가</button>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-lg font-bold mb-5 flex items-center gap-2 text-slate-400">
+                <span class="w-2 h-6 bg-slate-700 rounded-full"></span>
+                내 도메인 목록
+            </h2>
+            <div id="domainList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </section>
+    </main>
+
+    <div id="editModal" class="hidden fixed inset-0 modal-bg flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-800 w-full max-w-md p-8 rounded-3xl border border-slate-700 shadow-2xl">
+            <h2 class="text-xl font-bold mb-6 text-indigo-400">레코드 상세 수정</h2>
+            
+            <div class="space-y-5">
+                <div id="typeWarning" class="hidden p-4 bg-red-900/30 border border-red-500/50 rounded-xl text-xs text-red-200 leading-relaxed">
+                    ⚠️ <b>주의:</b> 레코드 타입을 변경하면 기존 연결이 끊어집니다. 특히 <b>CNAME</b>으로 변경 시, 같은 이름의 다른 레코드들은 모두 무효화되거나 삭제될 수 있습니다!
+                </div>
+
+                <input type="hidden" id="editId">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">레코드 타입</label>
+                    <select id="editType" onchange="updateEditModalUI()" class="w-full bg-slate-900 p-3 rounded-xl border border-slate-700 text-sm mt-1.5 outline-none">
+                        <option value="A">A</option><option value="AAAA">AAAA</option><option value="CNAME">CNAME</option>
+                        <option value="TXT">TXT</option><option value="MX">MX</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">호스트 이름</label>
+                    <input type="text" id="editSubdomain" class="w-full bg-slate-900 p-3 rounded-xl border border-slate-700 text-sm mt-1.5 outline-none">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">값 (IP/도메인/텍스트)</label>
+                    <input type="text" id="editContent" class="w-full bg-slate-900 p-3 rounded-xl border border-slate-700 text-sm mt-1.5 outline-none">
+                </div>
+                <div id="editPriorityGroup" class="hidden">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">우선순위 (MX)</label>
+                    <input type="number" id="editPriority" class="w-full bg-slate-900 p-3 rounded-xl border border-slate-700 text-sm mt-1.5 outline-none">
+                </div>
+                
+                <div class="flex gap-3 pt-6">
+                    <button onclick="closeModal()" class="flex-1 bg-slate-700 p-3 rounded-xl font-bold">취소</button>
+                    <button onclick="submitEdit()" class="flex-1 bg-indigo-600 p-3 rounded-xl font-bold">저장하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/dashboard.js?v=1.01"></script>
+</body>
+</html>

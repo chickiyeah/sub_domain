@@ -1,0 +1,33 @@
+/* SCSS 스타일의 변수 활용 */
+:root {
+    --primary: #4f46e5;
+    --deco-bg: #0f172a;
+    --card-bg: #1e293b;
+}
+
+body {
+    background-color: var(--deco-bg);
+    color: white;
+    font-family: 'Pretendard', sans-serif;
+}
+
+/* 모바일 전용 터치 최적화 */
+.btn-mobile {
+    @apply w-full py-3 rounded-lg font-bold transition-all active:scale-95;
+}
+
+/* 입력창 포커스 효과 */
+input:focus {
+    box-shadow: 0 0 0 2px var(--primary);
+    outline: none;
+}
+
+/* 도메인 리스트 카드 (모바일에서 세로로 쌓임) */
+.domain-card {
+    background: var(--card-bg);
+    transition: transform 0.2s;
+}
+
+.domain-card:hover {
+    transform: translateY(-5px);
+}
